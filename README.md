@@ -241,7 +241,7 @@ There are currently a few rough edges.
 
 ### `direnv`
 
-To make `direnv` work with the way Nix binaries are exposed, the following needs to be added to `.bashrc`:
+To make `direnv` show up and usable on host, the following needs to be added to `.bashrc`:
 
 ```bash
 if command -v direnv &>/dev/null && command -v bwrap &>/dev/null; then
@@ -255,9 +255,43 @@ No, I am not proud of this.
 
 Yes, I have a story about this.
 
+### Nix works. Direnv with nix and nix-direnv is currently non-operational
+
+The Nix integration itself is working properly.
+
+The normal Nix CLI can be exposed through Bubblebox, including flakes and development environments. In particular, `nix develop` works correctly with project-local `flake.nix` files and dependencies:
+
+```bash
+nix develop
+```
+
+This has been tested with development environments containing packages such as `cowsay` and `lolcat`, with the resulting tools available from the expected `/nix/store/...` paths.
+
+So if you want a development environment from a flake, **`nix develop` is currently the reliable way to do it.**
+
+`direnv`, with `nix`, however, is another story.
+
+The current integration can evaluate the flake and produce the correct development environment, but getting that environment applied cleanly to the existing interactive Bash session is currently unreliable.
+
+This is not a failure of `nix develop` or the underlying Bubblebox/Nix environment. The problem is specifically the `direnv` → interactive shell integration.
+
+I have also never personally managed to get the combination of Nix + direnv to behave particularly nicely, even on systems where Nix is installed normally. Bubblebox has apparently decided to continue this proud tradition.
+
+For now:
+
+```text
+Nix              ✓
+flakes           ✓
+nix develop      ✓
+project-local dev environments  ✓
+direnv with nix   ¯\_(ツ)_/¯
+```
+
+A working automatic environment-activation mechanism may be explored later.
+
 ### Bash completions
 
-Bash completions do not currently work correctly.
+Bash completions do not currently work currently.
 
 This is something I still need to investigate, particularly how Nix profiles expose and manage completion files.
 
@@ -283,6 +317,9 @@ It should also work on traditional mutable distributions such as:
 * Ubuntu
 * Gentoo
 * and probably most other Linux distributions
+
+REMEMBER TO ACTUALLY CHANGE THE /var/home related things in nix-shell-env and nix-exec to make it work on other distros. 
+The checks maybe automated in the future.
 
 It should even work on **NixOS**.
 
