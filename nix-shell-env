@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+exec bwrap \
+  --share-net \
+  --tmpfs / \
+  --ro-bind /usr /usr \
+  --symlink usr/bin /bin \
+  --symlink usr/sbin /sbin \
+  --symlink usr/lib /lib \
+  --symlink usr/lib64 /lib64 \
+  --dev-bind /dev /dev \
+  --proc /proc \
+  --bind /tmp /tmp \
+  --bind /var /var \
+  --bind /var/home /var/home \
+  --symlink var/home /home \
+  --ro-bind /run /run \
+  --ro-bind /etc /etc \
+  --dir /nix \
+  --bind "$HOME/.nix" /nix \
+  --chdir "$HOME" \
+  -- bash --rcfile <(echo 'source ~/.nix-profile/etc/profile.d/nix.sh 2>/dev/null || true')
