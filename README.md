@@ -255,14 +255,6 @@ No, I am not proud of this.
 
 Yes, I have a story about this.
 
-**Be prudent with `sed`.**
-
-### `$PWD` and programs such as `eza`
-
-Because of the way the Bubblewrap environments are currently constructed, programs such as `eza` can end up seeing `$HOME` rather than the actual current working directory.
-
-The environment is currently being improved to handle this properly.
-
 ### Bash completions
 
 Bash completions do not currently work correctly.
