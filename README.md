@@ -96,22 +96,81 @@ And due to the way that the bubblewrap environments are created currently, thing
 And bash completions don't work currently... 
 Have to look into where and how nix profile deals with bash completions to figure something out... 
 
-## Practical Situation 
+## Practical Situation
 
-Have no idea how this would work for zsh, fish and other shells because I only have bash and have used bash.
-Tested on Fedora Cosmic Atomic Spin though it should work on all Fedora Atomic offerings.
-Works on the Universal Blue (uBlue) distros like Bazzite, Bluefin and Aurora. 
-It should also work on OpenSUSE Aeon, Kalpa and MicroOS.
-It should also work on the average mutable distro as well so basically normal Fedora, Ubuntu, Gentoo, etc. 
-It should also work on NixOS as well but why do this.
-Should have no issues with SELinux or AppArmor as well, at least I haven't encountered any in my testing so far.
+`bubblebox` is currently developed and tested on **Fedora Atomic**, specifically the **Fedora COSMIC Atomic Spin**.
+
+It should work across the broader Fedora Atomic family, including **Universal Blue** distributions such as [Bazzite](https://github.com/ublue-os/bazzite), [Bluefin](https://github.com/ublue-os/bluefin), and [Aurora](https://github.com/ublue-os/aurora).
+
+It should also be applicable to other immutable Linux distributions such as **openSUSE Aeon, Kalpa, and MicroOS**.
+
+Despite being designed with immutable systems in mind, there is nothing particularly Atomic-specific about the underlying approach. It should also work on traditional mutable distributions such as **Fedora, Ubuntu, Gentoo**, and others.
+
+It should even work on **NixOS**.
+
+Why you would want to do this on NixOS? 
+
+### Shells
+
+The current setup is **Bash-only**.
+
+I use Bash, and that is what I have tested. I have no idea yet how well this translates to **Zsh, Fish, or other shells**, particularly where shell initialization, completions, and environment hooks are concerned.
+
+Contributions and experimentation in this area are very welcome.
+
+### Security
+
+The setup has so far been tested without encountering issues related to **SELinux or AppArmor**.
+
+That said, security policies and configurations can vary significantly between distributions and installations, so this should not be interpreted as a guarantee that every SELinux or AppArmor configuration will behave identically.
+
+If you run into something interesting, please open an issue.
+
 
 ## Future?
 
-Probably to get bash completions working and to see how I can make it work with other package managers like UV, Cargo, etc because why not.
+There is still plenty of unnecessary nonsense to build on top of this. Naturally, I intend to do so.
 
-## Thank You to -
+Some things I'd like to explore:
 
-https://github.com/YaLTeR because this blog of his inspired this entire thing - 
-https://bxt.rs/blog/easy-sandboxing-on-linux-with-bubblewrap/
-bubblewrap itself and the people who came up with namespaces and eveyrthing else
+* **Bash completions** — because I don't wanna layer anything other than [keyd](https://github.com/rvaiya/keyd) on my system
+* **Other shells** — particularly Zsh and Fish.
+* **Alternative package managers and development tools** — such as [uv](https://github.com/astral-sh/uv), Cargo, and others.
+* **Better integration** — while keeping the core idea small and user-space focused.
+
+It's mostly to see how far this little pile of Bubblewrap, namespaces, Nix, shell scripts, and questionable decisions can go.
+
+
+## Inspiration
+
+This project would not exist without the work that came before it.
+
+The original inspiration came from  Ivan Molodetskikh aka [YaLTeR](https://github.com/YaLTeR) and his article:
+
+[Easy Sandboxing on Linux with Bubblewrap](https://bxt.rs/blog/easy-sandboxing-on-linux-with-bubblewrap/)
+
+That article demonstrated how Bubblewrap can be used to construct a practical, low-friction sandbox from ordinary Linux filesystem primitives. The ideas in that article were the starting point for experimenting with a similar approach for a user-space Nix environment.
+
+A huge thank-you to YaLTeR for writing that article and showing how approachable Bubblewrap-based sandboxing can be.
+
+## Built on the work of others
+
+bubblebox stands on top of several projects and technologies that do the difficult parts:
+
+[bubblewrap](https://github.com/containers/bubblewrap) — provides the unprivileged sandboxing and namespace machinery used to construct the environment.
+[Nix](https://nixos.org/) — provides the package management, store, profiles, and development environment machinery.
+Linux namespaces — provide the kernel-level isolation primitives on which container and sandbox technologies such as Bubblewrap are built.
+[Linux kernel](https://github.com/torvalds/linux) — namespaces, mount namespaces and the filesystem machinery underneath them.
+See [`fs/namespace.c`](https://github.com/torvalds/linux/blob/master/fs/namespace.c).
+
+This project is an application of those technologies, not an attempt to re-implement them.
+
+Acknowledgements
+
+Special thanks to:
+
+Ivan Molodetskikh (YaLTeR) — for the original Bubblewrap sandboxing article that inspired this project.
+The Bubblewrap contributors — for building and maintaining the sandboxing tool that makes this approach possible.
+The Linux kernel and its contributors — for the namespace and filesystem primitives underneath the entire stack.
+The Nix community and contributors — for building the package-management and development-environment machinery used here.
+Everyone who has written documentation, examples, experiments, and strange little shell scripts that make Linux easier to understand.
