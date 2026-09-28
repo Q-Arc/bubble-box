@@ -18,5 +18,5 @@ exec bwrap \
   --ro-bind /etc /etc \
   --dir /nix \
   --bind "$HOME/.nix" /nix \
-  --chdir "$HOME" \
+  --chdir "$PWD" \
   -- "$HOME/.nix-profile/bin/$CMD" "$@"
